@@ -12,7 +12,12 @@ export const handler =async (event: any) =>{
 
     console.log(event);
 
-    if(!event || !event.text){
+    const body = JSON.parse(event.body);
+
+    console.log(body);
+    
+
+    if(!event || !body) {
         // Invalid JSON
         const ttl= Math.floor(Date.now()/1000)+ 30*60;
         await dynamoDBClient.send(new PutItemCommand(
@@ -38,7 +43,8 @@ export const handler =async (event: any) =>{
             Message: `Valid JSON recieved: ${event.text}`,
 
         }
-        ))
+        ));
+        console.log('Notifications sent!');
     }
 
     return {
