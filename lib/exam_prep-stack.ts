@@ -11,7 +11,7 @@ import { Construct } from 'constructs';
 export class ExamPrepStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-
+//create the error table 
   const errorTable = new Table (this, 'ErrorTable', {
     partitionKey: {
         name: 'id',
@@ -24,7 +24,7 @@ export class ExamPrepStack extends cdk.Stack {
   const errorTopic = new Topic(this, 'ErrorTopic',{
     topicName: 'ErrorTopic'
   });
-  
+  //Create Lambda
   const processFunction = new NodejsFunction(this,'processFunction',{
     runtime: Runtime.NODEJS_20_X,
     handler: 'handler',
@@ -38,7 +38,7 @@ export class ExamPrepStack extends cdk.Stack {
     errorTopic.grantPublish(processFunction);
     errorTable.grantReadWriteData(processFunction);
 
-
+ //Create API and Integration of Lambda to the API
   const api = new RestApi(this, 'ProcessorApi');
   const resource = api.root.addResource('processJSON');
   resource.addMethod('POST', new  LambdaIntegration(processFunction));
